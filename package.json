@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://michelvdm83.github.io/la-morena/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
