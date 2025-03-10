@@ -4,9 +4,18 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useEffect, useState } from "react";
 import { useWords } from "../../hooks/useWords";
+import DropdownWithSelects from "../../components/DropdownWithSelects/DropdownWithSelects";
 
 export default function SpeechPage() {
-    const [words, setWords] = useWords();
+    const {
+        words,
+        setList,
+        allNiveaus,
+        setNiveau,
+        currentListOptions,
+        currentNiveau,
+        currentList,
+    } = useWords();
 
     const {
         transcript,
@@ -20,6 +29,7 @@ export default function SpeechPage() {
 
     const [wordCorrect, setWordCorrect] = useState(false);
     const [currentWord, setCurrentWord] = useState(null);
+    const [spokenWord, setSpokenWord] = useState("");
     const [wordsCorrectlyAnswered, setWordsCorrectlyAnswered] = useState([]);
 
     useEffect(() => {
@@ -31,10 +41,19 @@ export default function SpeechPage() {
     }, [words]);
 
     useEffect(() => {
-        console.log(wordsCorrectlyAnswered);
+        let currentSpoken = transcript;
         if (
             currentWord !== null &&
-            transcript.toLowerCase() === currentWord.fr
+            currentSpoken.length > 0 &&
+            currentWord.fr.charAt(currentWord.fr.length - 1) === "?"
+        ) {
+            currentSpoken += "?";
+        }
+        setSpokenWord((old) => currentSpoken);
+
+        if (
+            currentWord !== null &&
+            currentSpoken.toLowerCase() === currentWord.fr.toLowerCase()
         ) {
             setWordCorrect(true);
             setBg(" bg-green-500");
@@ -67,42 +86,109 @@ export default function SpeechPage() {
         }
         setWordCorrect(false);
         resetTranscript();
+        setSpokenWord("");
     }
 
     if (!support) {
         return <div>Spraak niet ondersteund door browser</div>;
     }
 
-    if (currentWord !== null) {
-        return (
-            <div className=" w-full h-full flex flex-col items-center gap-1">
-                <div>Microfoon: {listening ? "aan" : "uit"}</div>
-                <button
-                    onClick={() =>
-                        SpeechRecognition.startListening({ language: "fr-FR" })
-                    }
-                >
-                    Start
-                </button>
-                <button onClick={SpeechRecognition.stopListening}>Stop</button>
-                <div>gesproken: {transcript}</div>
-                <div>Spreek het onderstaande woord uit in het frans:</div>
-                <div>{currentWord.nl}</div>
-                <input
-                    className={" w-20 ml-2" + bg}
-                    value={transcript}
-                    disabled
-                />
-                <button
-                    className=" btn btn-square btn-sm"
-                    onClick={nextSentence}
-                >
-                    {">>"}
-                </button>
-                {/* <div>{wordCorrect ? "Dit is juist" : "Helaas"}</div> */}
-            </div>
-        );
-    } else {
-        return <div>Alle opdrachten voltooid</div>;
+    function chapterListCallback(selectedList) {
+        setWordsCorrectlyAnswered([]);
+        setWordCorrect(false);
+        resetTranscript();
+        setSpokenWord("");
+        setList(selectedList);
     }
+
+    function niveauListCallback(selectedNiveau) {
+        setWordsCorrectlyAnswered([]);
+        setWordCorrect(false);
+        resetTranscript();
+        setSpokenWord("");
+        setNiveau(selectedNiveau);
+    }
+
+    // function getGroups() {
+    //     const allH = new Array();
+    //     allOption.sort().forEach((opt) => {
+    //         const group = opt.charAt(0);
+    //         if (!allH.includes(group)) {
+    //             allH.push(group);
+    //         }
+    //     });
+    //     return allH;
+    // }
+
+    // function getSelection(group) {
+    //     return (
+    //         <select value={group} onChange={onSelect}>
+    //             <option disabled hidden>
+    //                 {group}
+    //             </option>
+    //             {allOption
+    //                 .filter((opt) => opt.startsWith(group))
+    //                 .map((l) => {
+    //                     return <option key={l}>{l}</option>;
+    //                 })}
+    //         </select>
+    //     );
+    // }
+
+    return (
+        <div className=" w-full h-full flex flex-col items-center gap-1">
+            <DropdownWithSelects
+                allOptions={allNiveaus}
+                label={"Niveau/jaar"}
+                updateValue={niveauListCallback}
+                value={currentNiveau}
+            />
+            <DropdownWithSelects
+                allOptions={currentListOptions}
+                label={"Lijst"}
+                updateValue={chapterListCallback}
+                value={currentList}
+            />
+
+            {currentWord !== null ? (
+                <>
+                    <div>Microfoon: {listening ? "aan" : "uit"}</div>
+                    <div className=" flex justify-center gap-3">
+                        <button
+                            className=" bg-green-200 pl-1 pr-1 rounded-btn"
+                            onClick={() =>
+                                SpeechRecognition.startListening({
+                                    language: "fr-FR",
+                                })
+                            }
+                        >
+                            Start
+                        </button>
+                        <button
+                            className=" bg-red-200 pl-1 pr-1 rounded-btn"
+                            onClick={SpeechRecognition.stopListening}
+                        >
+                            Stop
+                        </button>
+                    </div>
+                    <div>Spreek het onderstaande uit in het frans:</div>
+                    <div>{currentWord.nl}</div>
+                    <div
+                        className={" w-fit ml-2 text-center h-6 pl-2 pr-2" + bg}
+                    >
+                        {spokenWord}
+                    </div>
+
+                    <button
+                        className=" btn btn-square btn-sm"
+                        onClick={nextSentence}
+                    >
+                        {">>"}
+                    </button>
+                </>
+            ) : (
+                <div>Alle opdrachten voltooid</div>
+            )}
+        </div>
+    );
 }
