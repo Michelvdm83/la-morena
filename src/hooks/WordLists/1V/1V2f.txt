@@ -24,4 +24,4 @@ ik zoek de bakkerij=je cherche la boulangerie
 Het is daar=C'est là-bas
 Heeft u een stokbrood?=Vous avez une baguette?
 Hoeveel kost dat?=Ça coute combien?
-Dat kost 5 euro 50=Ça coute cinq euros cinquante
+Dat kost 5 euro 50=Ça coute 5 euros 50

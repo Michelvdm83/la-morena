@@ -1,0 +1,13 @@
+het Frans=le français
+de docent=le prof
+de oefening=l'exercice
+ja=oui
+nee=non
+hallo, goedendag=bonjour
+tot ziens=au revoir
+heel goed=très bien
+bedankt=merci
+het is=c'est
+Hoe heet jij?=Comment tu t'appelles?
+Ik heet=Je m'appelle
+Ik weet het niet=Je ne sais pas

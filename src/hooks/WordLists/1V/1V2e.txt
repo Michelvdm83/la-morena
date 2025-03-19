@@ -18,5 +18,5 @@ met=avec
 veel=beaucoup
 altijd=toujours
 hoeveel=combien
-Ik wil graag twee croissants=Je voudrais deux croissants
+Ik wil graag twee croissants=Je voudrais 2 croissants
 Ik begrijp het niet=Je ne comprends pas
